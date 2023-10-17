@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Header } from '../../components/Header';
 import { Social } from '../../components/Social';
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { Link } from 'react-router-dom'; // Importe o Link
 import { db } from '../../services/firebaseConnection';
 import {
   getDocs,
@@ -120,6 +121,10 @@ export function Home() {
             </Social>
           </footer>
         )}
+        <div className="flex gap-4 mt-4 justify-center items-center">
+          <Link to="/login" className="text-white">Fazer Login</Link>
+          <Link to="/register" className="text-white">Registrar Conta</Link>
+        </div>
       </main>
     </div>
   );
