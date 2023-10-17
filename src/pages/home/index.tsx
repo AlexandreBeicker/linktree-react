@@ -12,14 +12,14 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
 
 interface LinkProps {
   id: string;
-  name?: string;
-  url?: string;
-  bg?: string;
-  color?: string;
+  name: string;
+  url: string;
+  bg: string;
+  color: string;
 }
 
 interface SocialLinksProps {
@@ -32,8 +32,6 @@ export function Home() {
   const [links, setLinks] = useState<LinkProps[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinksProps | null>(null);
   const [userName, setUserName] = useState<string>('');
-  
-
 
   useEffect(() => {
     function loadLinks() {
@@ -64,25 +62,26 @@ export function Home() {
     loadLinks();
   }, []);
 
-      useEffect(() => {
-        async function loadLinks() {
-          const user = getAuth().currentUser;
-          if (user) {
-            const linksCollection = collection(db, "users", user.uid, "links");
-            const snapshot = await getDocs(linksCollection);
-      
-            const userLinks: LinkProps[] = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            })) as LinkProps[];
-      
-            setLinks(userLinks);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+      if (user) {
+        const docRef = doc(db, 'social', user.uid);
+
+        getDoc(docRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            setSocialLinks(snapshot.data() as SocialLinksProps);
           }
-        }
-      
-        loadLinks();
-      }, []);
-  
+        });
+      } else {
+        setSocialLinks(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <div className="flex flex-col w-full py-4 items-center justify-center">
