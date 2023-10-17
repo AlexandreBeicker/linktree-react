@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Header } from "../../components/Header";
 import { Social } from '../../components/Social'
-import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa'
+import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { db } from '../../services/firebaseConnection'
 import {
   getDocs,
@@ -22,7 +22,7 @@ interface LinkProps{
 
 interface SocialLinksProps{
   facebook: string;
-  youtube: string;
+  linkedin: string;
   instagram: string;
 }
 
@@ -71,7 +71,7 @@ export function Home(){
             setSocialLinks({
               facebook: snapshot.data()?.facebook,
               instagram: snapshot.data()?.instagram,
-              youtube: snapshot.data()?.youtube,
+              linkedin: snapshot.data()?.linkedin,
             })
           }
       })
@@ -108,8 +108,8 @@ export function Home(){
               <FaFacebook size={35} color="#FFF" />
             </Social>
   
-            <Social url={socialLinks?.youtube}>
-              <FaYoutube size={35} color="#FFF" />
+            <Social url={socialLinks?.linkedin}>
+              <FaLinkedin size={35} color="#FFF" />
             </Social>
   
             <Social url={socialLinks?.instagram}>
