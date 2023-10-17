@@ -12,7 +12,7 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 interface LinkProps {
   id: string;
@@ -32,7 +32,7 @@ export function Home() {
   const [links, setLinks] = useState<LinkProps[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinksProps | null>(null);
   const [userName, setUserName] = useState<string>('');
-  const link: LinkProps = { id: 'some-id' };
+  
 
 
   useEffect(() => {
