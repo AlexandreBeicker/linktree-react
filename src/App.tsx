@@ -34,6 +34,10 @@ const router = createBrowserRouter([
     element: <Private><Networks/></Private>
   }, 
   {
+    path: '/:userId', 
+    element: <Home />
+  },
+  {
     path: "*",
     element: <ErrorPage/>
   }

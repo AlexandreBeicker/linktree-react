@@ -16,10 +16,16 @@ export function Login() {
       alert('Preencha todos os campos!');
       return;
     }
-
+  
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        navigate('/admin', { replace: true });
+      .then((userCredential) => {
+        const user = userCredential.user;
+  
+        // Salve o UID do usuário no localStorage
+        localStorage.setItem('uid', user.uid);
+  
+        // Redirecione para a página dinâmica com base no UID do usuário
+        navigate(`/${user.uid}`, { replace: true });
       })
       .catch((error) => {
         console.log('ERRO AO FAZER LOGIN:');
