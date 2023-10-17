@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { Home } from './pages/home'
 import { Admin } from './pages/admin'
 import { Login } from './pages/login'
+import { Register } from './pages/register'
 import { Networks } from './pages/networks'
 import { ToDoList } from './pages/todolist'
 import { ErrorPage } from './pages/error'
@@ -10,7 +11,11 @@ import { Private } from './routes/Private'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home/>
+    element: <Private><Home/></Private>
+  },
+  {
+    path: '/register',
+    element: <Register/>
   },
   {
     path: '/login',
@@ -18,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/todolist',
-    element: <ToDoList/>
+    element: <Private><ToDoList/></Private>
   },
   {
     path: '/admin',
