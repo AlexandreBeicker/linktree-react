@@ -1,56 +1,59 @@
-import { useState, FormEvent, useEffect} from 'react'
+import { useState, FormEvent, useEffect } from 'react';
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
-import { db } from '../../services/firebaseConnection'
-import {
-  setDoc,
-  doc,
-  getDoc
- } from 'firebase/firestore'
+import { db } from '../../services/firebaseConnection';
+import { getAuth } from 'firebase/auth';
+import { setDoc, doc, getDoc } from 'firebase/firestore';
 
-export function Networks(){
-  const [facebook, setFacebook] = useState("")
-  const [instagram, setInstagram] = useState("")
-  const [linkedin, setLinkedin] = useState("")
-
+export function Networks() {
+  const [facebook, setFacebook] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [linkedin, setLinkedin] = useState("");
 
   useEffect(() => {
-    function loadLinks(){
-      const docRef = doc(db, "social", "link")
-      getDoc(docRef)
-      .then((snapshot) => {
-        if(snapshot.data() !== undefined){
-          setFacebook(snapshot.data()?.facebook)
-          setInstagram(snapshot.data()?.instagram)
-          setLinkedin(snapshot.data()?.linkedin)
-        }
-
-      })
+    function loadLinks() {
+      const user = getAuth().currentUser;
+      if (user) {
+        const docRef = doc(db, "social", user.uid);
+        getDoc(docRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.data();
+              setFacebook(data?.facebook);
+              setInstagram(data?.instagram);
+              setLinkedin(data?.linkedin);
+            }
+          });
+      }
     }
 
     loadLinks();
-  }, [])
+  }, []);
 
-  function handleRegister(e: FormEvent){
+  function handleRegister(e: FormEvent) {
     e.preventDefault();
+    const user = getAuth().currentUser;
+    if (!user) {
+      console.log("Usuário não autenticado.");
+      return;
+    }
 
-    setDoc(doc(db, "social", "link"), {
+    setDoc(doc(db, "social", user.uid), {
       facebook: facebook,
       instagram: instagram,
       linkedin: linkedin
     })
-    .then(()=> {
-      console.log("CADASTRADOS COM SUCESSO!")
-    })
-    .catch((error) => {
-      console.log("ERRO AO SALVAR" + error)
-    })
-
+      .then(() => {
+        console.log("Links salvos com sucesso!");
+      })
+      .catch((error) => {
+        console.log("Erro ao salvar os links:", error);
+      });
   }
 
-  return(
+  return (
     <div className="flex items-center flex-col min-h-screen pb-7 px-2">
-      <Header/>
+      <Header />
 
       <h1 className="text-white text-2xl font-medium mt-8 mb-4">Minhas redes sociais</h1>
 
@@ -79,14 +82,14 @@ export function Networks(){
           onChange={ (e) => setLinkedin(e.target.value) }
         />
 
-        <button 
-        type="submit"
-        className="h-10 text-whiteh-9 rounded-md items-center justify-center flex mb-7 font-medium text-white"
-        style={{backgroundColor: '#43418e'}}
+        <button
+          type="submit"
+          className="h-10 text-white rounded-md items-center justify-center flex mb-7 font-medium"
+          style={{ backgroundColor: '#43418e' }}
         >
           Salvar links
         </button>
       </form>
     </div>
-  )
+  );
 }
