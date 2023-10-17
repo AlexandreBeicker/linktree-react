@@ -78,6 +78,7 @@ export function Admin() {
       setNameInput('');
       setUrlInput('');
       console.log('CADASTRADO COM SUCESSO!');
+      alert('Link cadastrado com sucesso!');
     } catch (error) {
       console.error('ERRO AO CADASTRAR NO BANCO', error);
     }
